@@ -22,7 +22,6 @@ public:
     void Update(float dt);
 	// Draw, call from your game draw function.
     void Draw();
-	
 	// Sets and Gets for the various attributes of the sprite.
     void SetPosition(float x, float y) { m_xpos = x; m_ypos = y; }   
     void SetAngle(float a)  { m_angle = a; }

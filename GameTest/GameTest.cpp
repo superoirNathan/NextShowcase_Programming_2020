@@ -14,6 +14,9 @@
 //------------------------------------------------------------------------
 CSimpleSprite *testSprite;
 CSimpleSprite *testSprite2;
+float right(APP_INIT_WINDOW_WIDTH), bot(APP_INIT_WINDOW_HEIGHT);
+float lStickX(0.0f), lStickY(0.0f);
+
 enum
 {
 	ANIM_FORWARDS,
@@ -52,43 +55,44 @@ void Init()
 // Update your simulation here. deltaTime is the elapsed time since the last update in ms.
 // This will be called at no greater frequency than the value of APP_MAX_FRAME_RATE
 //------------------------------------------------------------------------
+
+void MoveSprite(CSimpleSprite* sprite, float distX = 0.0f, float distY = 0.0f) {
+	float x, y;
+	sprite->GetPosition(x, y);
+	sprite->SetPosition(x + distX, y + distY);
+}
+void SetSprite(CSimpleSprite* sprite, float x2 = 0.0f, float y2 = 0.0f) {
+	sprite->SetPosition(x2, y2);
+}
 void Update(float deltaTime)
 {
 	//------------------------------------------------------------------------
 	// Example Sprite Code....
 	testSprite->Update(deltaTime);
 	testSprite2->Update(deltaTime);
-	if (App::GetController().GetLeftThumbStickX() > 0.5f)
+	lStickX = App::GetController().GetLeftThumbStickX();
+	lStickY = App::GetController().GetLeftThumbStickY();
+	MoveSprite(testSprite, lStickX*2.0f, lStickY*2.0f);
+
+	if (lStickX > 0.5f)
 	{
 		testSprite->SetAnimation(ANIM_RIGHT);
-		float x, y;
-		testSprite->GetPosition(x, y);
-		x += 1.0f;
-		testSprite->SetPosition(x, y);
+		SetSprite(testSprite2, right, bot/2);
 	}
-	if (App::GetController().GetLeftThumbStickX() < -0.5f)
+	if (lStickX < -0.5f)
 	{
 		testSprite->SetAnimation(ANIM_LEFT);
-		float x, y;
-		testSprite->GetPosition(x, y);
-		x -= 1.0f;
-		testSprite->SetPosition(x, y);
+		SetSprite(testSprite2, 0.0f, bot/2);
 	}
-	if (App::GetController().GetLeftThumbStickY() > 0.5f)
+	if (lStickY  > 0.5f)
 	{
 		testSprite->SetAnimation(ANIM_FORWARDS);
-		float x, y;
-		testSprite->GetPosition(x, y);
-		y += 1.0f;
-		testSprite->SetPosition(x, y);
+		SetSprite(testSprite2, right/2, bot);
 	}
-	if (App::GetController().GetLeftThumbStickY() < -0.5f)
+	if (lStickY < -0.5f)
 	{
 		testSprite->SetAnimation(ANIM_BACKWARDS);
-		float x, y;
-		testSprite->GetPosition(x, y);
-		y -= 1.0f;
-		testSprite->SetPosition(x, y);
+		SetSprite(testSprite2, right/ 2, 0.0f);
 	}
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_UP, false))
 	{
@@ -129,6 +133,7 @@ void Update(float deltaTime)
 //------------------------------------------------------------------------
 void Render()
 {	
+	// drawline sx,sy is start point & ex,ey is end point 
 
 	//------------------------------------------------------------------------
 	// Example Line Drawing.
@@ -149,7 +154,7 @@ void Render()
 		b = (float)i / 20.0f;
 		App::DrawLine(sx, sy, ex, ey,r,g,b);
 	}
-
+	App::DrawLine(0.0f, 0.0f, 600.0f, 770.0f, 0, g, 0);
 	//------------------------------------------------------------------------
 	// Example Sprite Code....
 	testSprite->Draw();
